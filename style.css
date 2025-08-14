@@ -1,20 +1,18 @@
-/* Box modeli hatasını önlemek için genel kural */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* Modern Stil ve Renk Paleti (Bordo Teması) */
 :root {
-  --primary-color: #8b0000; /* Bordo */
-  --secondary-color: #4a1414; /* Koyu Bordo */
-  --accent-color: #ffd700; /* Altın Sarısı */
-  --background-color: #f8f5f0; /* Soft krem */
+  --primary-color: #8b0000;
+  --secondary-color: #4a1414;
+  --accent-color: #ffd700;
+  --background-color: #f8f5f0;
   --card-background: #ffffff;
   --text-color: #333333;
-  --shadow-light: rgba(139, 0, 0, 0.1); /* Bordo tonunda gölge */
-  --shadow-medium: rgba(139, 0, 0, 0.2); /* Daha belirgin bordo gölge */
+  --shadow-light: rgba(139, 0, 0, 0.1); 
+  --shadow-medium: rgba(139, 0, 0, 0.2); 
 }
 
 body {
@@ -93,17 +91,17 @@ button:hover {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 5px 10px; /* Bu değeri artırarak butonu büyütebilirsiniz */
+    padding: 5px 10px; 
     border-radius: 50px;
     cursor: pointer;
     font-size: 14px;
-    white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+    white-space: nowrap; 
 }
 
 .delete-task-btn:hover {
     background-color: var(--secondary-color);
 }
-/* "Görevi sil" butonuyla aynı stiller */
+
 .edit-task-btn {
     background-color: var(--primary-color);
     color: white;
@@ -113,7 +111,7 @@ button:hover {
     cursor: pointer;
     font-size: 14px;
     white-space: nowrap;
-    margin-right: 5px; /* Butonlar arasına boşluk bırakır */
+    margin-right: 5px;
 }
 
 .edit-task-btn:hover {
@@ -161,11 +159,11 @@ button:hover {
 }
 
 .priority-medium {
-  color: #ff7f50; /* Mercan */
+  color: #ff7f50;
 }
 
 .priority-low {
-  color: #2ecc71; /* Yeşil */
+  color: #2ecc71;
 }
 
 /* Modal Genel Stili */
