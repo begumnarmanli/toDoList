@@ -1,0 +1,573 @@
+/* Box modeli hatasını önlemek için genel kural */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Modern Stil ve Renk Paleti (Bordo Teması) */
+:root {
+  --primary-color: #8b0000; /* Bordo */
+  --secondary-color: #4a1414; /* Koyu Bordo */
+  --accent-color: #ffd700; /* Altın Sarısı */
+  --background-color: #f8f5f0; /* Soft krem */
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --shadow-light: rgba(139, 0, 0, 0.1); /* Bordo tonunda gölge */
+  --shadow-medium: rgba(139, 0, 0, 0.2); /* Daha belirgin bordo gölge */
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Arka plan görseli */
+#background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("toDoList.jpg");
+  background-size: 75% auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Başlık ve Butonlar */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.5em;
+  color: var(--secondary-color);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px var(--shadow-light);
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px var(--shadow-medium);
+}
+.task-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.delete-task-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 10px; /* Bu değeri artırarak butonu büyütebilirsiniz */
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+}
+
+.delete-task-btn:hover {
+    background-color: var(--secondary-color);
+}
+/* "Görevi sil" butonuyla aynı stiller */
+.edit-task-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-right: 5px; /* Butonlar arasına boşluk bırakır */
+}
+
+.edit-task-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Butonları yan yana getirmek için */
+.task-card-header > div {
+    display: flex;
+    align-items: center;
+}
+/* Görev Kartları */
+.task-card {
+  background: var(--card-background);
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px var(--shadow-light);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px var(--shadow-medium);
+}
+
+.task-card h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: var(--secondary-color);
+}
+
+.task-card p {
+  margin: 5px 0;
+}
+
+.task-card span {
+  font-weight: 600;
+}
+.taskList{
+  margin-top: 5%;
+}
+.priority-high {
+  color: var(--accent-color);
+}
+
+.priority-medium {
+  color: #ff7f50; /* Mercan */
+}
+
+.priority-low {
+  color: #2ecc71; /* Yeşil */
+}
+
+/* Modal Genel Stili */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: var(--card-background);
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px var(--shadow-medium);
+  animation: fadeIn 0.3s ease-out;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close,
+.closeDetail {
+  float: right;
+  font-size: 30px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close:hover,
+.closeDetail:hover,
+.close:focus,
+.closeDetail:focus {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Form Elemanları */
+input,
+textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+}
+
+/* Özel Açılır Menü Stilleri */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  margin: 10px 0;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.custom-select-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  background-color: #fff;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-select-trigger:after {
+  content: "";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #888;
+}
+
+.custom-select-trigger.active:after {
+  border-top: 0;
+  border-bottom: 6px solid #888;
+}
+
+.custom-options {
+  display: none;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px var(--shadow-light);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+}
+
+.custom-options.active {
+  display: block;
+}
+
+.custom-options li {
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-options li:hover {
+  background-color: #f5f5f5;
+}
+
+.custom-options li:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.custom-options li:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Düzenleme için açılan input kutusunun stili */
+.edit-todo-input {
+  width: 100%;
+  border: 1px solid var(--primary-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1em;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Modal Footer Butonları */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-footer button {
+  width: auto;
+  padding: 10px 20px;
+  font-size: 0.9em;
+}
+
+#closeDetailBtn,
+.confirm-no {
+  background-color: #95a5a6;
+}
+
+#closeDetailBtn:hover,
+.confirm-no:hover {
+  background-color: #7f8c8d;
+}
+
+.confirm-yes {
+  background-color: #e74c3c;
+}
+
+.confirm-yes:hover {
+  background-color: #c0392b;
+}
+
+/* Yapılacaklar Listesi */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+#todoList {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-list li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1em;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Metin kutusu gibi davranan span */
+.todo-list li span,
+.editable {
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.todo-list li:last-child {
+  border-bottom: none;
+}
+
+.todo-list li:hover {
+  background-color: #f9f9f9;
+}
+
+.todo-list li.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.todo-list li input[type="checkbox"] {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+/* Konfeti animasyonu için canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Sil butonu */
+.delete-btn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-left: auto;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Mobil Design */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2em;
+  }
+  header button {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+  .modal-content {
+    width: auto;
+    max-width: 95%;
+    margin: 5% auto;
+    padding: 20px;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5em;
+  }
+
+  .modal-footer button {
+    padding: 8px 15px;
+    font-size: 18px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 1em;
+    color: #a0a0a0;
+  }
+  input,
+  textarea {
+    font-size: 24px;
+  }
+  .custom-select-container {
+    font-size: 24px;
+  }
+  .custom-select-trigger {
+    font-size: 24px;
+  }
+  button {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+  .task-card p,
+  .task-card p span {
+    font-size: 22px;
+  }
+  .todo-list li span,
+  .editable {
+    font-size: 24px;
+  }
+  .delete-btn {
+    font-size: 20px;
+  }
+  header button {
+    font-size: 20px;
+  }
+}
+
+/* Tablet Design */
+@media (min-width: 601px) and (max-width: 1024px) {
+  h1 {
+    font-size: 2.3em;
+  }
+
+  header button {
+    padding: 12px 25px;
+    font-size: 22px;
+  }
+
+  .modal-content {
+    max-width: 500px;
+    padding: 30px;
+  }
+
+  .modal-content h2 {
+    font-size: 30px;
+  }
+
+  .modal-footer button {
+    padding: 10px 20px;
+    font-size: 24px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 1.1em;
+  }
+
+  input,
+  textarea,
+  .custom-select-container,
+  .custom-select-trigger {
+    font-size: 26px;
+  }
+
+  button {
+    font-size: 22px;
+    margin-top: 20px;
+  }
+
+  .task-card p,
+  .task-card p span {
+    font-size: 24px;
+  }
+
+  .todo-list li span,
+  .editable {
+    font-size: 26px;
+  }
+
+  .delete-btn {
+    font-size: 22px;
+  }
+  #confirmMessage {
+    font-size: 24px;
+  }
+}

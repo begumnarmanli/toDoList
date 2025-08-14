@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#8b0000" />
+    <title>To-Do List</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <div id="background-image"></div>
+
+    <div class="container">
+      <header>
+        <h1>Görev Takibi</h1>
+        <div class="header-buttons">
+          <button id="newTaskBtn">+ Yeni Müşteri</button>
+          <button id="installPWA" style="display: none; background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+            📱 Ana Ekrana Ekle
+          </button>
+        </div>
+      </header>
+      <main id="taskList"></main>
+    </div>
+
+    <div id="taskModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Yeni Müşteri Ekle</h2>
+        <form id="taskForm">
+          <textarea
+            id="customer"
+            placeholder="Müşteri Adı"
+            rows="3"
+            required
+          ></textarea>
+
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" data-type="project">
+              Proje Türü Seçin
+            </div>
+            <ul class="custom-options" data-type="project">
+              <li data-value="E-ticaret Sitesi">E-ticaret Sitesi</li>
+              <li data-value="Kurumsal Web Sitesi">Kurumsal Web Sitesi</li>
+              <li data-value="Portfolyo Sitesi">Portfolyo Sitesi</li>
+              <li data-value="Online Randevu Sistemi">
+                Online Randevu Sistemi
+              </li>
+              <li data-value="Blog Platformu">Blog Platformu</li>
+              <li data-value="Haber Portalı">Haber Portalı</li>
+              <li data-value="Emlak Sitesi">Emlak Sitesi</li>
+              <li data-value="Finansal Uygulama">Finansal Uygulama</li>
+            </ul>
+            <input type="hidden" id="project" required />
+          </div>
+
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" data-type="priority">
+              Aciliyet
+            </div>
+            <ul class="custom-options" data-type="priority">
+              <li data-value="Yüksek">Yüksek</li>
+              <li data-value="Orta">Orta</li>
+              <li data-value="Düşük">Düşük</li>
+            </ul>
+            <input type="hidden" id="priority" required />
+          </div>
+
+          <label for="deadline">Son Teslim Tarihi:</label>
+          <input type="date" id="deadline" required />
+          
+          <label for="alarmTime">Alarm:</label>
+          <input type="datetime-local" id="alarmTime" />
+          
+          <input type="number" id="price" placeholder="Fiyat" required />
+          <button type="submit">Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="editTaskModal" class="modal">
+      <div class="modal-content">
+        <span class="closeEdit">&times;</span>
+        <h2 id="editModalTitle">Görevi Düzenle</h2>
+        <form id="editTaskForm">
+          <textarea
+            id="editCustomer"
+            placeholder="Müşteri Adı"
+            rows="3"
+            required
+          ></textarea>
+
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" data-type="editProject">
+              Proje Türü Seçin
+            </div>
+            <ul class="custom-options" data-type="editProject">
+              <li data-value="E-ticaret Sitesi">E-ticaret Sitesi</li>
+              <li data-value="Kurumsal Web Sitesi">Kurumsal Web Sitesi</li>
+              <li data-value="Portfolyo Sitesi">Portfolyo Sitesi</li>
+              <li data-value="Online Randevu Sistemi">
+                Online Randevu Sistemi
+              </li>
+              <li data-value="Blog Platformu">Blog Platformu</li>
+              <li data-value="Haber Portalı">Haber Portalı</li>
+              <li data-value="Emlak Sitesi">Emlak Sitesi</li>
+              <li data-value="Finansal Uygulama">Finansal Uygulama</li>
+            </ul>
+            <input type="hidden" id="editProject" required />
+          </div>
+
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" data-type="editPriority">
+              Aciliyet
+            </div>
+            <ul class="custom-options" data-type="editPriority">
+              <li data-value="Yüksek">Yüksek</li>
+              <li data-value="Orta">Orta</li>
+              <li data-value="Düşük">Düşük</li>
+            </ul>
+            <input type="hidden" id="editPriority" required />
+          </div>
+
+          <label for="editDeadline">Son Teslim Tarihi:</label>
+          <input type="date" id="editDeadline" required />
+          
+          <label for="editAlarmTime">Alarm:</label>
+          <input type="datetime-local" id="editAlarmTime" />
+          
+          <input type="number" id="editPrice" placeholder="Fiyat" required />
+          <button type="submit">Güncelle</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+      <div class="modal-content">
+        <span class="closeDetail">&times;</span>
+        <h2 id="detailTitle">Yapılacaklar</h2>
+        <ul id="todoList"></ul>
+        <input type="text" id="newTodo" placeholder="Yeni yapılacak ekle" />
+        <div class="modal-footer">
+          <button id="closeDetailBtn">Kapat</button>
+          <button id="addTodoBtn">Kaydet</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="modal">
+      <div class="modal-content">
+        <h2 id="confirmTitle">Onay Gerekli</h2>
+        <p id="confirmMessage">Bu görevi silmek istediğinizden emin misiniz?</p>
+        <div class="modal-footer">
+          <button id="confirmCancelBtn" class="confirm-no">İptal</button>
+          <button id="confirmDeleteBtn" class="confirm-yes">Evet, Sil</button>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("service-worker.js")
+            .then((reg) => {
+              console.log("Service Worker başarıyla kaydedildi.", reg);
+            })
+            .catch((err) => {
+              console.log("Service Worker kaydedilirken hata oluştu: ", err);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
