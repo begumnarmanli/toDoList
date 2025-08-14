@@ -120,7 +120,6 @@ button:hover {
     background-color: var(--secondary-color);
 }
 
-/* Butonları yan yana getirmek için */
 .task-card-header > div {
     display: flex;
     align-items: center;

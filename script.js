@@ -745,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 requireInteraction: true
             });
             
-            // Bildirime tıklandığında sayfayı aç
+            // Bildirime tıklandığında sayfayı açılacak
             notification.onclick = function() {
                 window.focus();
                 notification.close();

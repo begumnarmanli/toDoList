@@ -30,7 +30,7 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Alarm bildirimi için eklenen kod
+// Alarm bildirimi
 self.addEventListener('message', event => {
     if (event.data.type === 'ALARM_REMINDER') {
         const { title, body } = event.data;

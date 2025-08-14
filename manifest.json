@@ -1,5 +1,5 @@
 {
-  "name": "Görev Takibi",
+  "name": "toDoList",
   "short_name": "Görevler",
   "start_url": "/index.html",
   "display": "standalone",
