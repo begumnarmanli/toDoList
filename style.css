@@ -11,8 +11,8 @@
   --background-color: #f8f5f0;
   --card-background: #ffffff;
   --text-color: #333333;
-  --shadow-light: rgba(139, 0, 0, 0.1); 
-  --shadow-medium: rgba(139, 0, 0, 0.2); 
+  --shadow-light: rgba(139, 0, 0, 0.1);
+  --shadow-medium: rgba(139, 0, 0, 0.2);
 }
 
 body {
@@ -81,46 +81,46 @@ button:hover {
   box-shadow: 0 6px 8px var(--shadow-medium);
 }
 .task-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 .delete-task-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 5px 10px; 
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 14px;
-    white-space: nowrap; 
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 .delete-task-btn:hover {
-    background-color: var(--secondary-color);
+  background-color: var(--secondary-color);
 }
 
 .edit-task-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 14px;
-    white-space: nowrap;
-    margin-right: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  margin-right: 5px;
 }
 
 .edit-task-btn:hover {
-    background-color: var(--secondary-color);
+  background-color: var(--secondary-color);
 }
 
 .task-card-header > div {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 /* Görev Kartları */
 .task-card {
@@ -151,7 +151,7 @@ button:hover {
 .task-card span {
   font-weight: 600;
 }
-.taskList{
+.taskList {
   margin-top: 5%;
 }
 .priority-high {
@@ -504,6 +504,13 @@ textarea:focus {
   .delete-btn {
     font-size: 20px;
   }
+}
+.date,
+.time {
+  font-size: 18px;
+  margin-right: 5%;
+  width: auto;
+  text-align: right;
 }
 
 /* Tablet Design */
