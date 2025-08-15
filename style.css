@@ -452,7 +452,7 @@ textarea:focus {
 /* Mobil Design */
 @media (max-width: 600px) {
   h1 {
-    font-size: 2em;
+    font-size: 24px;
   }
   header button {
     padding: 10px 20px;
@@ -502,9 +502,6 @@ textarea:focus {
     font-size: 24px;
   }
   .delete-btn {
-    font-size: 20px;
-  }
-  header button {
     font-size: 20px;
   }
 }
