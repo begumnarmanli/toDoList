@@ -1,14 +1,16 @@
 const CACHE_NAME = "todo-list-cache-v2";
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/toDoList.jpg",
-  "/manifest.json",
-  "/to-do-list 128.png",
-  "/to-do-list 512.png"
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./toDoList.jpg",
+  "./manifest.json",
+  "./to-do-list 128.png",
+  "./to-do-list 512.png",
+  "./icon.png"
 ];
+
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
