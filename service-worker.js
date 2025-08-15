@@ -1,14 +1,14 @@
 const CACHE_NAME = "todo-list-cache-v2";
 const urlsToCache = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./script.js",
-  "./toDoList.jpg",
-  "./manifest.json",
-  "./to-do-list 128.png",
-  "./to-do-list 512.png",
-  "./icon.png"
+  "/toDoList/",
+  "/toDoList/index.html",
+  "/toDoList/style.css",
+  "/toDoList/script.js",
+  "/toDoList/toDoList.jpg",
+  "/toDoList/manifest.json",
+  "/toDoList/to-do-list 128.png",
+  "/toDoList/to-do-list 512.png",
+  "/toDoList/icon.png"
 ];
 
 

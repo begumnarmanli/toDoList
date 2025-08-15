@@ -1,18 +1,18 @@
 {
   "name": "toDoList",
   "short_name": "Görevler",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#8B0000",
   "icons": [
     {
-      "src": "/to-do-list 128.png",
+      "src": "./to-do-list-128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "/to-do-list 512.png",
+      "src": "./to-do-list-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
