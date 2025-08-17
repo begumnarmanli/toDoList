@@ -32,42 +32,102 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Alarm bildirimi
+// PWA için optimize edilmiş bildirim sistemi
 self.addEventListener('message', event => {
+    console.log('PWA Service Worker mesajı alındı:', event.data);
+    
     if (event.data.type === 'ALARM_REMINDER') {
         const { title, body } = event.data;
-        self.registration.showNotification(title, {
-            body: body,
-            icon: './to-do-list-128.png'
-        });
+        showPWANotification(title, body);
     }
     
-    // Zamanlanmış bildirim
+    // Zamanlanmış bildirim - PWA için optimize
     if (event.data.type === 'SCHEDULE_NOTIFICATION') {
         const { title, body, delay, customer, project } = event.data.data;
         
+        console.log('PWA için bildirim zamanlandı:', { title, body, delay });
+        
         // Belirtilen süre sonra bildirim göster
         setTimeout(() => {
-            self.registration.showNotification(title, {
-                body: body,
-                icon: './to-do-list-128.png',
-                badge: './to-do-list-128.png',
-                tag: `deadline-${customer}`,
-                requireInteraction: true,
-                data: {
-                    customer: customer,
-                    project: project
-                }
-            });
+            showPWANotification(title, body, customer, project);
         }, delay);
     }
 });
 
-// Bildirime tıklandığında uygulamayı aç
+// PWA için özel bildirim fonksiyonu
+function showPWANotification(title, body, customer = '', project = '') {
+    const notificationOptions = {
+        body: body,
+        icon: './to-do-list-128.png',
+        badge: './to-do-list-128.png',
+        tag: `deadline-${customer}`,
+        requireInteraction: true,
+        // PWA'da daha iyi çalışan ayarlar
+        silent: false,
+        vibrate: [200, 100, 200, 100, 200],
+        actions: [
+            {
+                action: 'open',
+                title: 'Aç'
+            },
+            {
+                action: 'close',
+                title: 'Kapat'
+            }
+        ],
+        // PWA'da ek ayarlar
+        data: {
+            url: self.location.origin,
+            customer: customer,
+            project: project
+        }
+    };
+
+    // PWA'da bildirim göster
+    self.registration.showNotification(title, notificationOptions)
+        .then(() => {
+            console.log('✅ PWA bildirimi gösterildi:', title);
+        })
+        .catch(error => {
+            console.log('❌ PWA bildirim hatası:', error);
+        });
+}
+
+// PWA'da bildirim tıklama olayı
 self.addEventListener('notificationclick', event => {
+    console.log('PWA bildirimi tıklandı:', event);
+    
     event.notification.close();
     
+    // PWA'yı aç
     event.waitUntil(
-        clients.openWindow('/')
+        clients.matchAll({ type: 'window' }).then(clientList => {
+            // Eğer PWA zaten açıksa, onu odakla
+            for (const client of clientList) {
+                if (client.url.includes(self.location.origin) && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            // PWA açık değilse, yeni pencerede aç
+            if (clients.openWindow) {
+                return clients.openWindow(self.location.origin);
+            }
+        })
     );
+});
+
+// PWA'da push event'ini yakala
+self.addEventListener('push', event => {
+    console.log('PWA push event alındı:', event);
+    
+    if (event.data) {
+        try {
+            const data = event.data.json();
+            showPWANotification(data.title || 'Görev Hatırlatıcı', data.body || 'Yeni bildirim');
+        } catch (e) {
+            showPWANotification('Görev Hatırlatıcı', 'Yeni bir görev hatırlatıcısı var!');
+        }
+    } else {
+        showPWANotification('Görev Hatırlatıcı', 'Yeni bir görev hatırlatıcısı var!');
+    }
 });

@@ -44,22 +44,20 @@ Notification.requestPermission().then((permission) => {
 onMessage(messaging, (payload) => {
   console.log("Bildirim alındı:", payload);
 });
-// Service Worker kayıt sistemi
+// PWA için basitleştirilmiş Service Worker kayıt sistemi
 if ('serviceWorker' in navigator) {
-  // Firebase messaging service worker'ı kaydet
-  navigator.serviceWorker.register('/firebase-messaging-sw.js')
-    .then(registration => {
-      console.log('Firebase Service Worker kayıt başarılı:', registration);
-      
-      // Ana service worker'ı da kaydet
-      return navigator.serviceWorker.register('/service-worker.js');
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js', {
+      scope: '/',
+      updateViaCache: 'none'
     })
     .then(registration => {
-      console.log('Ana Service Worker kayıt başarılı:', registration);
+      console.log('✅ PWA Service Worker kayıt başarılı:', registration);
     })
     .catch(error => {
-      console.log('Service Worker kayıt hatası:', error);
+      console.log('❌ PWA Service Worker kayıt hatası:', error);
     });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -202,22 +200,123 @@ document.addEventListener("DOMContentLoaded", () => {
     installPWAButton.style.display = "none";
   }
 
-  // Bildirim izni yönetimi
+  // PWA için basitleştirilmiş bildirim izni yönetimi
   function requestNotificationPermission() {
     if ("Notification" in window) {
-      console.log("Bildirim durumu:", Notification.permission);
+      console.log("📱 PWA Cihaz:", navigator.userAgent);
+      console.log("🔔 PWA Bildirim durumu:", Notification.permission);
 
       if (Notification.permission === "default") {
-        // Kullanıcıya açıklama göster
-        showNotificationPermissionModal();
+        console.log("📱 PWA için bildirim izni isteniyor...");
+        
+        // PWA'da hemen izin iste
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("✅ PWA'da bildirim izni verildi!");
+            showWelcomeNotification();
+          } else {
+            console.log("❌ PWA'da bildirim izni reddedildi");
+            showPWANotificationGuide();
+          }
+        });
       } else if (Notification.permission === "granted") {
-        console.log("✅ Bildirim izni zaten verilmiş");
+        console.log("✅ PWA bildirim izni zaten verilmiş");
         showWelcomeNotification();
       } else if (Notification.permission === "denied") {
-        console.log("❌ Bildirim izni reddedilmiş");
-        showNotificationSettingsGuide();
+        console.log("❌ PWA bildirim izni reddedilmiş");
+        showPWANotificationGuide();
       }
+    } else {
+      console.log("❌ PWA Notification API desteklenmiyor");
     }
+  }
+
+  // PWA için bildirim rehberi
+  function showPWANotificationGuide() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+
+    content.innerHTML = `
+      <h3 style="color: #8b0000; margin-bottom: 20px;">📱 PWA Bildirim Ayarları</h3>
+      <p style="margin-bottom: 20px; line-height: 1.6;">
+        PWA uygulamasında bildirimler için ayarlar:
+      </p>
+      <div style="
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: left;
+        line-height: 1.8;
+      ">
+        <strong>Android PWA Ayarları:</strong>
+        <br>1. Ayarlar → Uygulamalar → Görevler (PWA)
+        <br>2. "Bildirimler" → "İzin ver"
+        <br>3. "Arka planda çalışma" → "İzin ver"
+        <br><br>
+        <strong>Alternatif:</strong>
+        <br>1. PWA'yı kapatın
+        <br>2. Tarayıcıda siteyi açın
+        <br>3. Bildirim izni verin
+        <br>4. PWA'yı tekrar açın
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="retryPWA" style="
+          background: #4CAF50;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        ">Tekrar Dene</button>
+        <button id="closePWAGuide" style="
+          background: #95a5a6;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+        ">Kapat</button>
+      </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Tekrar dene butonu
+    document.getElementById('retryPWA').addEventListener('click', () => {
+      modal.remove();
+      setTimeout(() => {
+        requestNotificationPermission();
+      }, 500);
+    });
+
+    // Kapat butonu
+    document.getElementById('closePWAGuide').addEventListener('click', () => {
+      modal.remove();
+    });
   }
 
   // Bildirim izni modal'ı göster
@@ -1050,9 +1149,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // PWA kapalıyken bildirim gönderme fonksiyonu
+  // PWA için basitleştirilmiş bildirim sistemi
   function schedulePushNotification(customer, message, delay) {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
+    console.log('PWA bildirim zamanlanıyor:', { customer: customer.name, message, delay });
+    
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then(registration => {
         // Service Worker'a mesaj gönder
         registration.active.postMessage({
@@ -1066,14 +1167,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
         
-        // Firebase token varsa, sunucuya da bildirim gönderme isteği yapabilirsiniz
-        const firebaseToken = localStorage.getItem('firebaseToken');
-        if (firebaseToken) {
-          console.log('Firebase token mevcut, sunucuya bildirim gönderilebilir');
-          // Burada sunucuya POST isteği yaparak bildirim gönderebilirsiniz
-          // Örnek: sendNotificationToServer(firebaseToken, customer, message, delay);
-        }
+        console.log('✅ PWA bildirim zamanlandı');
+      }).catch(error => {
+        console.log('❌ PWA bildirim hatası:', error);
       });
+    } else {
+      console.log('❌ Service Worker desteklenmiyor');
     }
   }
 
