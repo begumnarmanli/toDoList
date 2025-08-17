@@ -20,18 +20,9 @@
     <div class="container">
       <header>
         <h1>Görev Takibi</h1>
-        <div class="header-buttons">
-          <button id="newTaskBtn">+ Yeni Görev</button>
-          <button id="installPWA" style="display: none; background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-            <!-- 📱 Ana Ekrana Ekle -->
-          </button>
-          <button id="notificationSettings" style="display: none; background: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-            🔔 Bildirim Ayarları
-          </button>
-          <button id="testNotification" style="display: none; background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-            🧪 Test Bildirimi
-          </button>
-        </div>
+                 <div class="header-buttons">
+           <button id="newTaskBtn">+ Yeni Görev</button>
+         </div>
       </header>
       <main id="taskList"></main>
     </div>
@@ -79,13 +70,10 @@
             <input type="hidden" id="priority" required />
           </div>
 
-          <label for="deadline">Son Teslim Tarihi:</label>
-          <input type="date" id="deadline" required />
-          
-          <label for="alarmTime">Alarm:</label>
-          <input type="datetime-local" id="alarmTime" />
-          
-          <input type="number" id="price" placeholder="Fiyat" required />
+                     <label for="deadline">Son Teslim Tarihi:</label>
+           <input type="date" id="deadline" required />
+           
+           <input type="number" id="price" placeholder="Fiyat" required />
           <button type="submit">Kaydet</button>
         </form>
       </div>
@@ -134,13 +122,10 @@
             <input type="hidden" id="editPriority" required />
           </div>
 
-          <label for="editDeadline">Son Teslim Tarihi:</label>
-          <input type="date" id="editDeadline" required />
-          
-          <label for="editAlarmTime">Alarm:</label>
-          <input type="datetime-local" id="editAlarmTime" />
-          
-          <input type="number" id="editPrice" placeholder="Fiyat" required />
+                     <label for="editDeadline">Son Teslim Tarihi:</label>
+           <input type="date" id="editDeadline" required />
+           
+           <input type="number" id="editPrice" placeholder="Fiyat" required />
           <button type="submit">Güncelle</button>
         </form>
       </div>
@@ -172,21 +157,7 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
-    <script type="module" src="script.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("service-worker.js")
-            .then((reg) => {
-              console.log("Service Worker başarıyla kaydedildi.", reg);
-            })
-            .catch((err) => {
-              console.log("Service Worker kaydedilirken hata oluştu: ", err);
-            });
-        });
-      }
-    </script>
+         <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+     <script type="module" src="script.js"></script>
   </body>
 </html>
