@@ -23,20 +23,24 @@ const messaging = getMessaging(app);
 // Bildirim izni iste ve token al
 Notification.requestPermission().then((permission) => {
   if (permission === "granted") {
-    getToken(messaging, { vapidKey: "BGaIqWWI7NWxhc1ZejkIshmals6Cj6hKUEs26XwdTjq8VIOhIceNkn1-OjwCiQeKDuM_7HaZ9Cauf9pRIwBe328" })
-      .then((currentToken) => {
-        if (currentToken) {
-          console.log("Device token:", currentToken);
-          // Token'ı localStorage'a kaydet
-          localStorage.setItem('firebaseToken', currentToken);
-          console.log("✅ Firebase token kaydedildi!");
-        } else {
-          console.log("Token alınamadı!");
-        }
-      })
-      .catch((err) => {
-        console.log("Token alma hatası:", err);
-      });
+    getToken(messaging, { 
+      vapidKey: "BGaIqWWI7NWxhc1ZejkIshmals6Cj6hKUEs26XwdTjq8VIOhIceNkn1-OjwCiQeKDuM_7HaZ9Cauf9pRIwBe328" 
+    })
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log("Device token:", currentToken);
+        localStorage.setItem('firebaseToken', currentToken);
+        alert("Token alındı:\n" + currentToken);
+        console.log("✅ Firebase token kaydedildi!");
+      } else {
+        alert("Token alınamadı!");
+        console.log("Token alınamadı!");
+      }
+    })
+    .catch((err) => {
+      alert("Token alma hatası:\n" + err);
+      console.log("Token alma hatası:", err);
+    });
   }
 });
 
