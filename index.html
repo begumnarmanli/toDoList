@@ -21,7 +21,7 @@
         <div class="header-buttons">
           <button id="newTaskBtn">+ Yeni Müşteri</button>
           <button id="installPWA" style="display: none; background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-            📱 Ana Ekrana Ekle
+            <!-- 📱 Ana Ekrana Ekle -->
           </button>
         </div>
       </header>
@@ -165,7 +165,7 @@
     <canvas id="confetti-canvas"></canvas>
 
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
