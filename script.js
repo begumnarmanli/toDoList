@@ -1,53 +1,14 @@
-// 1️⃣ Firebase import ve initialize
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import {
-  getMessaging,
-  getToken,
-  onMessage,
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging.js";
+// PWA Bildirim Sistemi - Firebase olmadan
+console.log("🚀 PWA Bildirim Sistemi Başlatıldı");
 
-// Firebase Web App config (senin verdiğin)
-const firebaseConfig = {
-  apiKey: "AIzaSyCNKVzX7zhjE3apEa76OQ3DszALj263BG4",
-  authDomain: "todolistapp-7bf29.firebaseapp.com",
-  projectId: "todolistapp-7bf29",
-  storageBucket: "todolistapp-7bf29.firebasestorage.app",
-  messagingSenderId: "876045465989",
-  appId: "1:876045465989:web:a53f4dd30a6867e96f6cec",
-};
+// Bildirim izni kontrolü
+if ("Notification" in window) {
+  console.log("📱 Bildirim API destekleniyor");
+  console.log("🔔 Mevcut bildirim durumu:", Notification.permission);
+} else {
+  console.log("❌ Bildirim API desteklenmiyor");
+}
 
-// Firebase’i başlat
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
-
-// Bildirim izni iste ve token al
-Notification.requestPermission().then((permission) => {
-  if (permission === "granted") {
-    getToken(messaging, { 
-      vapidKey: "BGaIqWWI7NWxhc1ZejkIshmals6Cj6hKUEs26XwdTjq8VIOhIceNkn1-OjwCiQeKDuM_7HaZ9Cauf9pRIwBe328" 
-    })
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log("Device token:", currentToken);
-        localStorage.setItem('firebaseToken', currentToken);
-        alert("Token alındı:\n" + currentToken);
-        console.log("✅ Firebase token kaydedildi!");
-      } else {
-        alert("Token alınamadı!");
-        console.log("Token alınamadı!");
-      }
-    })
-    .catch((err) => {
-      alert("Token alma hatası:\n" + err);
-      console.log("Token alma hatası:", err);
-    });
-  }
-});
-
-// Uygulama açıkken gelen bildirimleri yakala
-onMessage(messaging, (payload) => {
-  console.log("Bildirim alındı:", payload);
-});
 // PWA için basitleştirilmiş Service Worker kayıt sistemi
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -204,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     installPWAButton.style.display = "none";
   }
 
-  // PWA için basitleştirilmiş bildirim izni yönetimi
+  // PWA için basitleştirilmiş bildirim izni yönetimi - Firebase olmadan
   function requestNotificationPermission() {
     if ("Notification" in window) {
       console.log("📱 PWA Cihaz:", navigator.userAgent);
@@ -218,6 +179,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (permission === "granted") {
             console.log("✅ PWA'da bildirim izni verildi!");
             showWelcomeNotification();
+            // Test bildirimi gönder
+            setTimeout(() => {
+              testPWA();
+            }, 1000);
           } else {
             console.log("❌ PWA'da bildirim izni reddedildi");
             showPWANotificationGuide();
@@ -226,12 +191,28 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (Notification.permission === "granted") {
         console.log("✅ PWA bildirim izni zaten verilmiş");
         showWelcomeNotification();
+        // Test bildirimi gönder
+        setTimeout(() => {
+          testPWA();
+        }, 1000);
       } else if (Notification.permission === "denied") {
         console.log("❌ PWA bildirim izni reddedilmiş");
         showPWANotificationGuide();
       }
     } else {
       console.log("❌ PWA Notification API desteklenmiyor");
+    }
+  }
+  
+  // PWA test fonksiyonu
+  function testPWA() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.active.postMessage({
+          type: 'TEST_NOTIFICATION'
+        });
+        console.log('✅ Test bildirimi gönderildi');
+      });
     }
   }
 

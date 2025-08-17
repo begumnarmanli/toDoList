@@ -32,7 +32,7 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// PWA için optimize edilmiş bildirim sistemi
+// PWA için optimize edilmiş bildirim sistemi - Firebase olmadan
 self.addEventListener('message', event => {
     console.log('PWA Service Worker mesajı alındı:', event.data);
     
@@ -51,6 +51,11 @@ self.addEventListener('message', event => {
         setTimeout(() => {
             showPWANotification(title, body, customer, project);
         }, delay);
+    }
+    
+    // Test bildirimi
+    if (event.data.type === 'TEST_NOTIFICATION') {
+        showPWANotification('Test Bildirimi', 'PWA bildirim sistemi çalışıyor!');
     }
 });
 
