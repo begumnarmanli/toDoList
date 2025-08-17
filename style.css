@@ -76,6 +76,16 @@ body {
   #newTaskBtn {
     width: 100%;
     max-width: 300px;
+    min-height: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
+  }
+  
+  /* Mobil cihazlarda buton tıklama alanını büyüt */
+  #newTaskBtn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
   }
 }
 

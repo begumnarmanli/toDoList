@@ -202,58 +202,215 @@ document.addEventListener("DOMContentLoaded", () => {
     installPWAButton.style.display = "none";
   }
 
-  // Bildirim izni iste ve mobil cihazlarda da çalışsın
-  if ("Notification" in window) {
-    console.log("Bildirim durumu:", Notification.permission);
+  // Bildirim izni yönetimi
+  function requestNotificationPermission() {
+    if ("Notification" in window) {
+      console.log("Bildirim durumu:", Notification.permission);
 
-    if (Notification.permission === "default") {
-      // Hemen bildirim izni iste
-      console.log("Bildirim izni isteniyor...");
+      if (Notification.permission === "default") {
+        // Kullanıcıya açıklama göster
+        showNotificationPermissionModal();
+      } else if (Notification.permission === "granted") {
+        console.log("✅ Bildirim izni zaten verilmiş");
+        showWelcomeNotification();
+      } else if (Notification.permission === "denied") {
+        console.log("❌ Bildirim izni reddedilmiş");
+        showNotificationSettingsGuide();
+      }
+    }
+  }
+
+  // Bildirim izni modal'ı göster
+  function showNotificationPermissionModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+
+    content.innerHTML = `
+      <h3 style="color: #8b0000; margin-bottom: 20px;">🔔 Bildirim İzni</h3>
+      <p style="margin-bottom: 20px; line-height: 1.6;">
+        Görev hatırlatıcıları alabilmek için bildirim iznine ihtiyacımız var.
+        <br><br>
+        <strong>Bu sayede:</strong>
+        <br>• 1 gün önce hatırlatma
+        <br>• 1 saat önce hatırlatma
+        <br>• Manuel alarm bildirimleri
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="allowNotifications" style="
+          background: #4CAF50;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        ">İzin Ver</button>
+        <button id="skipNotifications" style="
+          background: #95a5a6;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+        ">Şimdilik Geç</button>
+      </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // İzin ver butonu
+    document.getElementById('allowNotifications').addEventListener('click', () => {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           console.log("✅ Bildirim izni verildi!");
           showWelcomeNotification();
+          modal.remove();
         } else {
           console.log("❌ Bildirim izni reddedildi");
-          // Kullanıcıya tekrar sor
-          setTimeout(() => {
-            if (
-              confirm(
-                "Alarm sistemi için bildirim izni gerekli! Tekrar denemek ister misiniz?"
-              )
-            ) {
-              Notification.requestPermission();
-            }
-          }, 1000);
+          showNotificationSettingsGuide();
+          modal.remove();
         }
       });
-    } else if (Notification.permission === "granted") {
-      console.log("✅ Bildirim izni zaten verilmiş");
-      showWelcomeNotification();
-    } else if (Notification.permission === "denied") {
-      console.log("❌ Bildirim izni reddedilmiş");
-      // Reddedilmişse tekrar iste
-      setTimeout(() => {
-        if (
-          confirm(
-            "Alarm sistemi için bildirim izni gerekli! Tarayıcı ayarlarından izin vermeniz gerekiyor. Tekrar denemek ister misiniz?"
-          )
-        ) {
-          // Tarayıcı ayarlarını aç
-          if (confirm("Tarayıcı ayarlarını açmak ister misiniz?")) {
-            // Chrome için
-            if (navigator.userAgent.includes("Chrome")) {
-              alert(
-                "Chrome ayarları → Gizlilik ve güvenlik → Site ayarları → Bildirimler → Bu site için izin ver"
-              );
-            }
-          }
-          // Tekrar izin iste
-          Notification.requestPermission();
-        }
-      }, 2000);
-    }
+    });
+
+    // Şimdilik geç butonu
+    document.getElementById('skipNotifications').addEventListener('click', () => {
+      modal.remove();
+    });
   }
+
+  // Bildirim ayarları rehberi
+  function showNotificationSettingsGuide() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+
+    const isChrome = navigator.userAgent.includes("Chrome");
+    const isSafari = navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
+    const isFirefox = navigator.userAgent.includes("Firefox");
+
+    let instructions = '';
+    if (isChrome) {
+      instructions = `
+        <strong>Chrome'da bildirim izni vermek için:</strong>
+        <br>1. Adres çubuğundaki 🔒 simgesine tıklayın
+        <br>2. "Bildirimler" seçeneğini "İzin ver" yapın
+        <br>3. Sayfayı yenileyin
+      `;
+    } else if (isSafari) {
+      instructions = `
+        <strong>Safari'de bildirim izni vermek için:</strong>
+        <br>1. Safari → Tercihler → Web siteleri
+        <br>2. Bildirimler bölümünü bulun
+        <br>3. Bu site için "İzin ver" seçin
+      `;
+    } else if (isFirefox) {
+      instructions = `
+        <strong>Firefox'ta bildirim izni vermek için:</strong>
+        <br>1. Adres çubuğundaki 🔒 simgesine tıklayın
+        <br>2. "Bildirimler" seçeneğini "İzin ver" yapın
+        <br>3. Sayfayı yenileyin
+      `;
+    } else {
+      instructions = `
+        <strong>Bildirim izni vermek için:</strong>
+        <br>1. Tarayıcı ayarlarına gidin
+        <br>2. Site izinleri → Bildirimler
+        <br>3. Bu site için izin verin
+      `;
+    }
+
+    content.innerHTML = `
+      <h3 style="color: #8b0000; margin-bottom: 20px;">⚙️ Bildirim Ayarları</h3>
+      <p style="margin-bottom: 20px; line-height: 1.6;">
+        Bildirim izni reddedildi. Manuel olarak ayarlamanız gerekiyor:
+      </p>
+      <div style="
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: left;
+        line-height: 1.8;
+      ">
+        ${instructions}
+      </div>
+      <button id="closeGuide" style="
+        background: #8b0000;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+      ">Anladım</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    document.getElementById('closeGuide').addEventListener('click', () => {
+      modal.remove();
+    });
+  }
+
+  // Bildirim ayarları butonu
+  const notificationSettingsBtn = document.getElementById("notificationSettings");
+  
+  // PWA'da bildirim ayarları butonunu göster
+  if (window.matchMedia("(display-mode: standalone)").matches) {
+    notificationSettingsBtn.style.display = "inline-block";
+    
+    notificationSettingsBtn.addEventListener("click", () => {
+      showNotificationSettingsGuide();
+    });
+  }
+
+  // Sayfa yüklendiğinde bildirim izni iste
+  setTimeout(() => {
+    requestNotificationPermission();
+  }, 2000);
 
   function showWelcomeNotification() {
     if (Notification.permission === "granted") {
@@ -267,19 +424,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Mobil cihazlar için hem click hem touch event'leri ekle
+  // Mobil cihazlar için güçlendirilmiş event listener'lar
+  function openNewTaskModal() {
+    console.log("Modal açılıyor...");
+    taskModal.style.display = "block";
+  }
+
+  // Click event
   newTaskBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     console.log("Yeni görev butonuna tıklandı");
-    taskModal.style.display = "block";
+    openNewTaskModal();
   });
   
-  // Touch event'i de ekle
+  // Touch events
   newTaskBtn.addEventListener("touchstart", (e) => {
     e.preventDefault();
     console.log("Yeni görev butonuna dokunuldu");
-    taskModal.style.display = "block";
+    openNewTaskModal();
+  });
+
+  // Mouse events (mobil tarayıcılar için)
+  newTaskBtn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    console.log("Yeni görev butonuna mouse down");
+    openNewTaskModal();
+  });
+
+  // Pointer events (modern tarayıcılar için)
+  newTaskBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    console.log("Yeni görev butonuna pointer down");
+    openNewTaskModal();
   });
   // Modal kapatma butonları için mobil optimizasyon
   closeTaskModal.addEventListener("click", (e) => {
