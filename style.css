@@ -47,6 +47,38 @@ body {
   padding: 20px;
 }
 
+/* Mobil cihazlar için responsive tasarım */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .header-buttons {
+    justify-content: center;
+  }
+  
+  button {
+    padding: 15px 20px;
+    font-size: 1.1em;
+    min-height: 44px; /* iOS için minimum dokunma alanı */
+  }
+  
+  #newTaskBtn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
 /* Başlık ve Butonlar */
 header {
   display: flex;
@@ -54,6 +86,16 @@ header {
   align-items: center;
   padding-bottom: 20px;
   border-bottom: 1px solid #e0e0e0;
+  /* Mobil cihazlar için flex-wrap */
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 h1 {
@@ -73,6 +115,13 @@ button {
   font-size: 1em;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px var(--shadow-light);
+  /* Mobil cihazlar için optimizasyon */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 button:hover {

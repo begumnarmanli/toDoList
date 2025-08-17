@@ -267,10 +267,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  newTaskBtn.addEventListener("click", () => {
+  // Mobil cihazlar için hem click hem touch event'leri ekle
+  newTaskBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Yeni görev butonuna tıklandı");
     taskModal.style.display = "block";
   });
-  closeTaskModal.addEventListener("click", () => {
+  
+  // Touch event'i de ekle
+  newTaskBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    console.log("Yeni görev butonuna dokunuldu");
+    taskModal.style.display = "block";
+  });
+  // Modal kapatma butonları için mobil optimizasyon
+  closeTaskModal.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Modal kapatma butonuna tıklandı");
+    taskModal.style.display = "none";
+  });
+  
+  closeTaskModal.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    console.log("Modal kapatma butonuna dokunuldu");
     taskModal.style.display = "none";
   });
 
@@ -299,12 +320,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    console.log("Form submit edildi");
+    
     const customerName = document.getElementById("customer").value;
     const projectType = document.getElementById("project").value;
     const priority = document.getElementById("priority").value;
     const deadline = document.getElementById("deadline").value;
     const price = document.getElementById("price").value;
     const alarmTime = document.getElementById("alarmTime").value;
+
+    console.log("Form değerleri:", { customerName, projectType, priority, deadline, price, alarmTime });
 
     if (!projectType || !priority) {
       alert("Lütfen proje türü ve aciliyet seçiniz.");
