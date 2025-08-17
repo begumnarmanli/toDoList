@@ -57,6 +57,22 @@ self.addEventListener('message', event => {
     if (event.data.type === 'TEST_NOTIFICATION') {
         showPWANotification('Test Bildirimi', 'PWA bildirim sistemi çalışıyor!');
     }
+    
+    // Anında bildirim testi
+    if (event.data.type === 'IMMEDIATE_NOTIFICATION') {
+        showPWANotification('Anında Test', 'Service Worker çalışıyor!');
+    }
+});
+
+// Android için ek event listener'lar
+self.addEventListener('install', event => {
+    console.log('Service Worker yüklendi');
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+    console.log('Service Worker aktif');
+    event.waitUntil(self.clients.claim());
 });
 
 // PWA için özel bildirim fonksiyonu

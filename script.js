@@ -171,6 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("📱 PWA Cihaz:", navigator.userAgent);
       console.log("🔔 PWA Bildirim durumu:", Notification.permission);
 
+      // iPhone kontrolü
+      const isIPhone = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      
+      console.log("📱 Platform:", isIPhone ? "iPhone" : isAndroid ? "Android" : "Diğer");
+
       if (Notification.permission === "default") {
         console.log("📱 PWA için bildirim izni isteniyor...");
         
@@ -195,6 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           testPWA();
         }, 1000);
+        
+        // iPhone için özel uyarı
+        if (isIPhone) {
+          showIPhoneNotificationWarning();
+        }
       } else if (Notification.permission === "denied") {
         console.log("❌ PWA bildirim izni reddedilmiş");
         showPWANotificationGuide();
@@ -204,15 +215,96 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // PWA test fonksiyonu
+  // iPhone için özel uyarı
+  function showIPhoneNotificationWarning() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+
+    content.innerHTML = `
+      <h3 style="color: #8b0000; margin-bottom: 20px;">📱 iPhone Bildirim Uyarısı</h3>
+      <p style="margin-bottom: 20px; line-height: 1.6;">
+        <strong>iPhone'da PWA bildirimleri sadece ekran açıkken çalışır.</strong>
+        <br><br>
+        Arka planda bildirim almak için:
+        <br>• PWA'yı açık tutun
+        <br>• Ekranı kapatmayın
+        <br>• Veya Safari'de kullanın
+      </p>
+      <button id="closeIPhoneWarning" style="
+        background: #8b0000;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+      ">Anladım</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    document.getElementById('closeIPhoneWarning').addEventListener('click', () => {
+      modal.remove();
+    });
+  }
+  
+  // PWA test fonksiyonu - Android için optimize
   function testPWA() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then(registration => {
+        // Önce anında test bildirimi gönder
         registration.active.postMessage({
-          type: 'TEST_NOTIFICATION'
+          type: 'IMMEDIATE_NOTIFICATION'
         });
-        console.log('✅ Test bildirimi gönderildi');
+        console.log('✅ Anında test bildirimi gönderildi');
+        
+        // 3 saniye sonra normal test bildirimi
+        setTimeout(() => {
+          registration.active.postMessage({
+            type: 'TEST_NOTIFICATION'
+          });
+          console.log('✅ Gecikmeli test bildirimi gönderildi');
+        }, 3000);
+      }).catch(error => {
+        console.log('❌ Service Worker hazır değil:', error);
+        // Alternatif test
+        if (Notification.permission === "granted") {
+          new Notification("Test Bildirimi", {
+            body: "Tarayıcı bildirimi çalışıyor!",
+            icon: "./to-do-list-128.png"
+          });
+        }
       });
+    } else {
+      console.log('❌ Service Worker desteklenmiyor');
+      // Alternatif test
+      if (Notification.permission === "granted") {
+        new Notification("Test Bildirimi", {
+          body: "Tarayıcı bildirimi çalışıyor!",
+          icon: "./to-do-list-128.png"
+        });
+      }
     }
   }
 
@@ -481,13 +573,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bildirim ayarları butonu
   const notificationSettingsBtn = document.getElementById("notificationSettings");
+  const testNotificationBtn = document.getElementById("testNotification");
   
   // PWA'da bildirim ayarları butonunu göster
   if (window.matchMedia("(display-mode: standalone)").matches) {
     notificationSettingsBtn.style.display = "inline-block";
+    testNotificationBtn.style.display = "inline-block";
     
     notificationSettingsBtn.addEventListener("click", () => {
       showNotificationSettingsGuide();
+    });
+    
+    testNotificationBtn.addEventListener("click", () => {
+      testPWA();
     });
   }
 
